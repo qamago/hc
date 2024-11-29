@@ -1,0 +1,54 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress-prometheus
+  namespace: monitoring
+  annotations:
+    # Rewrite target
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # type of authentication
+    nginx.ingress.kubernetes.io/auth-type: basic
+    # name of the secret that contains the user/password definitions
+    nginx.ingress.kubernetes.io/auth-secret: prometheus-nginx-htpasswd
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: prometheus-server
+              port:
+                number: 9090
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress-alertmanager
+  namespace: monitoring
+  annotations:
+    # Rewrite target
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # type of authentication
+    nginx.ingress.kubernetes.io/auth-type: basic
+    # name of the secret that contains the user/password definitions
+    nginx.ingress.kubernetes.io/auth-secret: prometheus-nginx-htpasswd
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+        - path: /alertmanager(/|$)(.*)
+          pathType: Prefix
+          backend:
+            service:
+              name: prometheus-alertmanager
+              port:
+                number: 9093

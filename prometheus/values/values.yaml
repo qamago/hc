@@ -1,0 +1,14 @@
+prometheus:
+  extraScrapeConfigs: |
+    - job_name: 'prometheus-flask-exporter'
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: prometheus-flask-exporter
+      metric_relabel_configs:
+        - source_labels: [__name__]
+          action: keep
+          regex: '.*'
+

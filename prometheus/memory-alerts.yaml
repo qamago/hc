@@ -1,0 +1,27 @@
+---
+prometheus:
+  serverFiles:
+    alerting_rules.yml:
+      groups:
+        - name: memory-alerts
+          rules:
+            - alert: PodHighMemoryUsage
+              expr: (container_memory_usage_bytes / container_memory_limit_bytes) > 0.10
+              for: 1m
+              labels:
+                severity: warning
+              annotations:
+                summary: "High memory usage detected in pod {{ $labels.pod }}"
+                description: "Pod {{ $labels.pod }} is using more than 10% of its allocated memory for 1 minute."
+
+        - name: test-alert
+          rules:
+            - alert: AlwaysFiring
+              expr: vector(1)  # This is always true
+              for: 10s
+              labels:
+                severity: critical
+              annotations:
+                summary: "This is a test alert"
+                description: "This alert always fires to test alerting setup."
+
