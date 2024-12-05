@@ -48,6 +48,7 @@ kubectl create secret generic prometheus-nginx-htpasswd --from-file=auth -n moni
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
+helm dependency update prometheus # due to Chart.lock
 
 # Deploy Prometheus using Helm
 helm upgrade --install prometheus prometheus --values prometheus/memory-alerts.yaml --values prometheus/values/values.yaml -n monitoring

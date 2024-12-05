@@ -6,7 +6,7 @@ prometheus:
         - name: memory-alerts
           rules:
             - alert: PodHighMemoryUsage
-              expr: (container_memory_usage_bytes / container_memory_limit_bytes) > 0.10
+              expr: (container_memory_usage_bytes / container_memory_working_set_bytes) > 0.10
               for: 1m
               labels:
                 severity: warning
